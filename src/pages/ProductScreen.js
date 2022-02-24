@@ -1,6 +1,5 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import products from "../product";
 import Reviews from "../components/Reviews";
 import {
   Container,
@@ -10,13 +9,26 @@ import {
   Row,
   Col,
   Button,
-  ListGroupItem,
 } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 function ProductScreen(props) {
   const { id } = useParams();
-  const selectedProduct = products.find((product) => product._id == id);
+  const [product, getProduct] = useState({});
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_KEY}api/products/${id}`
+      );
+      let productDetails = data;
+      getProduct(productDetails);
+    }
+    fetchData();
+  }, [id]);
+
   return (
     <>
       <Container>
@@ -25,51 +37,60 @@ function ProductScreen(props) {
         </Link>
         <Row>
           <Col lg="6" xl="6">
-            <Image src={selectedProduct.image} fluid />
+            <Image src={product.image} fluid />
           </Col>
           <Col lg="3" xl="3">
             <ListGroup variant="flush" className="py-3">
               <ListGroup.Item>
                 <strong>
-                  <h3>{selectedProduct.name}</h3>
+                  <h3>{product.name}</h3>
                 </strong>
               </ListGroup.Item>
               <ListGroup.Item>
-                <Reviews value={selectedProduct.rating} text={`${selectedProduct.numReviews} reviews`} color='#FFFF00' />
+                <Reviews
+                  value={product.rating}
+                  text={`${product.numReviews} reviews`}
+                  color="#FFFF00"
+                />
               </ListGroup.Item>
+              <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
               <ListGroup.Item>
-                Price: ${selectedProduct.price}
-              </ListGroup.Item>
-              <ListGroup.Item>
-                Description: {selectedProduct.description}
+                Description: {product.description}
               </ListGroup.Item>
             </ListGroup>
           </Col>
           <Col lg="3" xl="3">
             <Card>
-            <ListGroup variant="flush" className="m-3">
-              <ListGroup.Item>
-                <Row>
-                <Col>Price:</Col>
-                <Col>{selectedProduct.price}$</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-              <Row>
-                <Col>Status:</Col>
-                <Col>{(selectedProduct.countInStock > 0) ? "In Stock": "Out of Stock"}</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                <Col>Brand:</Col>
-                <Col>{selectedProduct.brand}</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item className="d-grid gap-1">
-                <Button className="btn-block"  disabled={selectedProduct.countInStock == 0}>Add To Cart</Button>
-              </ListGroup.Item>
-            </ListGroup>
+              <ListGroup variant="flush" className="m-3">
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Price:</Col>
+                    <Col>{product.price}$</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Status:</Col>
+                    <Col>
+                      {product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Brand:</Col>
+                    <Col>{product.brand}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item className="d-grid gap-1">
+                  <Button
+                    className="btn-block"
+                    disabled={product.countInStock === 0}
+                  >
+                    Add To Cart
+                  </Button>
+                </ListGroup.Item>
+              </ListGroup>
             </Card>
           </Col>
         </Row>
