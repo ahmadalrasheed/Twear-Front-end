@@ -9,7 +9,7 @@ function Product({ product }) {
     
         <Card className="my-3 py-3 px-3 rounded">
           <Link to={`/product/${product._id}`}>
-            <Card.Img src={product.image} />
+            <Card.Img src={`${process.env.REACT_APP_ACCESS_IMAGE_LINK}`+`${product.image}`} />
           </Link>
           <Card.Body>
             <Link

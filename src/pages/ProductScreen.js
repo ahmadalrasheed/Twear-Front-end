@@ -31,13 +31,15 @@ function ProductScreen(props) {
 
   return (
     <>
+    {console.log(process.env.REACT_ACCESS_IMAGE_LINK)}
+    {console.log(process.env.REACT_ACCESS_IMAGE_LINK)}
       <Container>
         <Link className="btn btn-light my-3 border" to="/">
           Go Back
         </Link>
         <Row>
           <Col lg="6" xl="6">
-            <Image src={product.image} fluid />
+            <Image src={`${process.env.REACT_APP_ACCESS_IMAGE_LINK}`+`${product.image}`} fluid />
           </Col>
           <Col lg="3" xl="3">
             <ListGroup variant="flush" className="py-3">
