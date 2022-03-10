@@ -10,54 +10,59 @@ import {
   Col,
   Button,
 } from "react-bootstrap";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import {useDispatch , useSelector } from 'react-redux';
+import {listProductDetails} from '../actions/productActions';
+import ErrorAlert from "../components/Alert";
+import Loading from "../components/Loading";
 
-function ProductScreen(props) {
+function ProductScreen() {
   const { id } = useParams();
-  const [product, getProduct] = useState({});
+
+  const dispatch = useDispatch();
+  const product = useSelector((state) => state.productListDetails);
+  const {productDetails , error , loading} = product
+
 
   useEffect(() => {
-    async function fetchData() {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_API_KEY}api/products/${id}`
-      );
-      let productDetails = data;
-      getProduct(productDetails);
-    }
-    fetchData();
-  }, [id]);
+   dispatch(listProductDetails(id))
+  }, []);
 
   return (
     <>
-    {console.log(process.env.REACT_ACCESS_IMAGE_LINK)}
-    {console.log(process.env.REACT_ACCESS_IMAGE_LINK)}
+    {loading ? (
+            <Loading />
+          ) : error ? (
+            <h3>
+              <ErrorAlert error={error}></ErrorAlert>
+            </h3>
+          ) :
       <Container>
         <Link className="btn btn-light my-3 border" to="/">
           Go Back
         </Link>
         <Row>
           <Col lg="6" xl="6">
-            <Image src={`${process.env.REACT_APP_ACCESS_IMAGE_LINK}`+`${product.image}`} fluid />
+            <Image src={`${process.env.REACT_APP_ACCESS_IMAGE_LINK}`+`${productDetails.image}`} fluid />
           </Col>
           <Col lg="3" xl="3">
             <ListGroup variant="flush" className="py-3">
               <ListGroup.Item>
                 <strong>
-                  <h3>{product.name}</h3>
+                  <h3>{productDetails.name}</h3>
                 </strong>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Reviews
-                  value={product.rating}
-                  text={`${product.numReviews} reviews`}
+                  value={productDetails.rating}
+                  text={`${productDetails.numReviews} reviews`}
                   color="#FFFF00"
                 />
               </ListGroup.Item>
-              <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+              <ListGroup.Item>Price: ${productDetails.price}</ListGroup.Item>
               <ListGroup.Item>
-                Description: {product.description}
+                Description: {productDetails.description}
               </ListGroup.Item>
             </ListGroup>
           </Col>
@@ -67,27 +72,27 @@ function ProductScreen(props) {
                 <ListGroup.Item>
                   <Row>
                     <Col>Price:</Col>
-                    <Col>{product.price}$</Col>
+                    <Col>{productDetails.price}$</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
                     <Col>Status:</Col>
                     <Col>
-                      {product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                      {productDetails.countInStock > 0 ? "In Stock" : "Out of Stock"}
                     </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
                     <Col>Brand:</Col>
-                    <Col>{product.brand}</Col>
+                    <Col>{productDetails.brand}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item className="d-grid gap-1">
                   <Button
                     className="btn-block"
-                    disabled={product.countInStock === 0}
+                    disabled={productDetails.countInStock === 0}
                   >
                     Add To Cart
                   </Button>
@@ -96,7 +101,7 @@ function ProductScreen(props) {
             </Card>
           </Col>
         </Row>
-      </Container>
+      </Container>}
     </>
   );
 }
