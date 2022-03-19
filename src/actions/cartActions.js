@@ -1,4 +1,4 @@
-import { ADD_TO_CART } from "../constants/addToCartConstants";
+import { ADD_TO_CART , GET_CART_ITEMS } from "../constants/addToCartConstants";
 import axios from "axios";
 
 export const addToCart = (id, qty) => async (dispatch) => {
@@ -23,3 +23,13 @@ export const addToCart = (id, qty) => async (dispatch) => {
     payload: JSON.parse(localStorage.getItem("addedToCart")),
   });
 };
+
+
+export const getCartItems = () => async (dispatch) =>{
+  try{
+    dispatch({type:GET_CART_ITEMS, payload: JSON.parse(localStorage.getItem("addedToCart"))})
+  }
+  catch(error){
+    dispatch({error: error.message})
+  }
+}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { addToCart } from "../actions/cartActions";
+import { addToCart , getCartItems} from "../actions/cartActions";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "react-bootstrap";
 function CartScreen() {
@@ -12,6 +12,8 @@ function CartScreen() {
   useEffect(() => {
     if (id) {
       dispatch(addToCart(id, qty.get("qty")));
+    }else{
+      dispatch(getCartItems());
     }
   }, [dispatch, id, qty]);
   return (
