@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { addToCart , getCartItems} from "../actions/cartActions";
 import { useDispatch, useSelector } from "react-redux";
-import { Container } from "react-bootstrap";
+import EmptyCart from "../components/EmptyCart";
+
+import Cart from '../components/Cart'
 function CartScreen() {
   const [qty] = useSearchParams();
   const { id } = useParams();
@@ -18,16 +20,8 @@ function CartScreen() {
   }, [dispatch, id, qty]);
   return (
     <>
-      <Container>
-        {console.log(addedToCart)}
-        { addedToCart ? (
-          addedToCart.map((item, idx) => {
-            return <p key={idx}> : {item.name}</p>;
-          })
-        ) : (
-          <h2>Your Cart is empty</h2>
-        )}
-      </Container>
+        {addedToCart && <Cart addedToCart={addedToCart}/>}
+        {!addedToCart && <EmptyCart />}
     </>
   );
 }
