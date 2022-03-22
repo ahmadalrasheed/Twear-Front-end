@@ -29,12 +29,14 @@ function Cart({ addedToCart }) {
   const proceedToCheckoutHandler = () => {
     navigate("/login?redirect=shipping");
   };
-  const removeItem = (id) => {
+
+  const removeItem = async (id) => {
     const cartAfterRemove = addedToCart.filter((item) => item._id != id);
-    if (cartAfterRemove == 0) {
+    if (cartAfterRemove.length == 0) {
       localStorage.removeItem("addedToCart");
+      navigate("/cart");
     } else {
-      localStorage.removeItem("addedToCart");
+      await localStorage.setItem("addedToCart", JSON.stringify(cartAfterRemove));
     }
     dispatch(getCartItems());
   };
@@ -71,7 +73,7 @@ function Cart({ addedToCart }) {
                     <div className="cartElements">
                       <Form.Control
                         as="select"
-                        defaultValue={item.qty}
+                        value={item.qty}
                         onChange={(e) =>
                           updateQuantity(e.target.value, item._id)
                         }

@@ -14,7 +14,7 @@ function EmptyCart() {
           <Col lg={6}>
             <link rel="icon" href="" />
             <Image
-              src="./images/emptycart.png"
+              src="./images/cart1.png"
               alt="new-shopping-cart"
               fluid
               rounded
